@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HITGS 応援法 - 全8曲 / 3列表示</title>
+<style>
+  :root { color-scheme:light dark; --bg:#f3f6f9; --panel:#fff;--text:#202733;--muted:#647181;--line:#d9e1ea; --size:15px; }
+  @media (prefers-color-scheme:dark) { :root{ --bg:#111823;--panel:#1b2634;--text:#f3f6fa;--muted:#aab7c7;--line:#3d4b5c; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Noto Sans KR","Noto Sans JP",sans-serif; }
+  .outer { max-width:1800px; margin:0 auto; padding:24px 22px 50px; }
+  .app-head { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin:0 0 18px; }
+  h1 { font-size:clamp(24px,2.3vw,32px); margin:0 0 7px; letter-spacing:-.025em; }
+  .intro { margin:0; font-size:13px; color:var(--muted);line-height:1.55; }
+  .controls { display:flex;align-items:center;gap:10px;flex-wrap:wrap; }
+  .controls label { font-size:12px; color:var(--muted); white-space:nowrap; }
+  input[type=range] { width:100px;vertical-align:middle;accent-color:var(--text); }
+  .btn { font:inherit; font-size:13px; color:var(--text);padding:9px 12px; border:1px solid var(--line);border-radius:9px;cursor:pointer;background:var(--panel); }
+  button:focus-visible,summary:focus-visible { outline:3px solid #569ff2; outline-offset:3px; }
+  nav { display:flex; overflow-x:auto; gap:8px; padding:3px 2px 15px; scrollbar-width:thin; }
+  .tab { flex:0 0 auto; min-width:116px; display:flex;gap:7px; flex-direction:column; justify-content:flex-start; align-items:flex-start;
+         border:1px solid var(--line);padding:11px 12px; border-radius:10px; color:var(--text);background:var(--panel);font-size:13px;font-weight:700;cursor:pointer; }
+  .tab .dot { display:block; height:6px;width:35px;border-radius:5px;background:var(--chip);margin-bottom:2px; }
+  .tab .img-tag { font-size:10px;font-weight:500;color:var(--muted); }
+  .tab.active { outline:2px solid var(--chip);outline-offset:-2px; }
+  .song-panel[hidden] {display:none;}
+  .song-header {border-top:3px solid var(--theme);padding:17px 4px 18px; display:flex; justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap; }
+  .song-header .eyebrow {font-size:10px;letter-spacing:.12em;color:var(--muted);font-weight:700;margin:0 0 3px;}
+  h2 {font-size:25px;margin:0 0 4px;letter-spacing:-.02em;}
+  .album {font-size:12px;color:var(--muted);margin:0;}
+  .legend {font-size:12px;text-align:right;line-height:1.7;color:var(--muted);}
+  .legend .swatch {display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--theme);vertical-align:-1px;margin-right:5px;}
+  .legend .sublegend {font-size:11px;}
+  .scroll {overflow-x:auto; padding:2px 2px 18px; scrollbar-width:thin;}
+  .cols {display:grid;grid-template-columns:repeat(3,minmax(305px,1fr));gap:18px;min-width:950px;align-items:start;}
+  .lyric-col {border-radius:13px;border:1px solid var(--line);background:var(--panel);padding:15px 16px 22px;min-width:0;}
+  .lyric-col h3 {margin:0 0 15px;border-bottom:1px solid var(--line);padding-bottom:10px;font-size:15px;}
+  .lyric-body {white-space:pre-wrap; overflow-wrap:anywhere; font-size:var(--size);line-height:1.72;}
+  .lyric-body .chant {color:var(--accent);font-weight:750;}
+  .lyric-body .chant.audience { color:var(--audience,#c45a87); }
+  @media (prefers-color-scheme:dark) { .lyric-body .chant {color:var(--accent-dark);} .lyric-body .chant.audience {color:var(--audience-dark,#ffa8c8);} }
+  .original-reference {background:var(--panel);border:1px solid var(--line);border-radius:11px;margin-top:12px;padding:12px 14px;}
+  .original-reference summary {cursor:pointer;font-size:13px;font-weight:600;}
+  .original-reference img {max-width:min(100%,1000px);height:auto;display:block;margin:14px auto;border-radius:6px;}
+  .original-reference p {font-size:12px;color:var(--muted);}
+  .foot {font-size:12px;color:var(--muted);line-height:1.7;margin-top:20px;}
+  @media(max-width:650px){ .outer{padding:15px 12px 28px;}.cols{gap:10px;min-width:950px;}.lyric-col{padding:12px 13px 18px;}.legend{text-align:left;} }
+  @page {size:A3 landscape;margin:11mm;}
+  @media print { :root{color-scheme:light;--bg:#fff;--panel:#fff;--text:#111;--line:#d3d3d3;}body{background:#fff;}
+    .outer{max-width:none;padding:0;} .controls,nav,.foot,.original-reference{display:none!important;}
+    .app-head{margin:0 0 8px;}h1{font-size:19px}.intro{display:none;}.song-header{padding:10px 0 12px;}
+    .scroll{overflow:visible;}.cols{min-width:0;gap:9px;grid-template-columns:repeat(3,minmax(0,1fr));}
+    .lyric-col{padding:8px;border-radius:0;border:0;}.lyric-col h3{font-size:12px;padding-bottom:5px;}
+    .lyric-body{font-size:10pt;line-height:1.5;}.lyric-body .chant{color:var(--accent)!important;}
+    .lyric-body .chant.audience{color:var(--audience,#c45a87)!important;}
+    .song-panel[hidden]{display:none;}
+  }
+</style>
+</head>
+<body><main class="outer">
+  <header class="app-head"><div><h1>HITGS 応援法 / 3列表示</h1><p class="intro">全8曲・掛け声を曲別カラーで強調。画像掲載の2曲もテキスト化しています。</p></div>
+  <div class="controls"><label for="fontSize">文字サイズ <output id="sizeLabel">15px</output></label><input type="range" min="12" max="21" value="15" id="fontSize"><button type="button" class="btn" id="printBtn">印刷 / PDF</button></div></header>
+  <nav id="tabs" role="tablist" aria-label="応援法を表示する曲"><button class="tab active" id="tab-0" data-key="0" role="tab" aria-controls="song0" aria-selected="true" style="--chip:#e2bd00"><span class="dot"></span>SOURPATCH<span class="img-tag">元HTML</span></button><button class="tab" id="tab-1" data-key="1" role="tab" aria-controls="song1" aria-selected="false" style="--chip:#cf3944"><span class="dot"></span>GROSS<span class="img-tag">元HTML</span></button><button class="tab" id="tab-2" data-key="2" role="tab" aria-controls="song2" aria-selected="false" style="--chip:#b78ce6"><span class="dot"></span>CHARIZZMA<span class="img-tag">元HTML</span></button><button class="tab" id="tab-3" data-key="3" role="tab" aria-controls="song3" aria-selected="false" style="--chip:#dc81a0"><span class="dot"></span>HAPPY<span class="img-tag">元HTML</span></button><button class="tab" id="tab-4" data-key="4" role="tab" aria-controls="song4" aria-selected="false" style="--chip:#dc81a0"><span class="dot"></span>A-HA!<span class="img-tag">元HTML</span></button><button class="tab" id="tab-5" data-key="5" role="tab" aria-controls="song5" aria-selected="false" style="--chip:#2594a0"><span class="dot"></span>Cherry Blossom<span class="img-tag">画像文字起こし</span></button><button class="tab" id="tab-6" data-key="6" role="tab" aria-controls="song6" aria-selected="false" style="--chip:#8e4d9d"><span class="dot"></span>Little by Little<span class="img-tag">画像文字起こし</span></button><button class="tab" id="tab-7" data-key="7" role="tab" aria-controls="song7" aria-selected="false" style="--chip:#e49ecb"><span class="dot"></span>Gulliver!<span class="img-tag">字幕・提供テキスト</span></button></nav>
+  <article class="song-panel" id="song0" role="tabpanel" aria-labelledby="tab-0"  style="--theme:#ffd61d;--accent:#ffd61d;--accent-dark:#ffd61d;">
+    <header class="song-header"><div><p class="eyebrow">HITGS / FAN CHANT</p><h2>SOURPATCH</h2><p class="album">Things we love : H</p></div>
+    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br><span class="sublegend">MHTML内の色付き文字を反映</span></div></header>
+    <div class="scroll"><div class="cols"><section class="lyric-col"><h3>1</h3><div class="lyric-body"><span class="chant">(비비 서진 서희 혜린 이유)
+(힛지스 사워패치)
+</span>
+Ooh, I love it
+제멋대로 커져 버린
+Ooh, I love it
+짜릿한 이 느낌
+
+Yeah, we’re <span class="chant">stupid, stupid</span>
+Yeah, let’s <span class="chant">do this, do this</span>
+Cuz love’s so sweet
+And a little bit of sour
+
+Baby, think I’m in <span class="chant">love</span>
+너만을 waiting so <span class="chant">long</span>
+그니까 계속 옆에 있어
+자꾸만 보고 싶어
+
+설렘을 한 스푼, with some syrup
+이 떨리는 기분, so precious
+
+하늘 위로 <span class="chant">날아</span>
+더 높이 <span class="chant">higher</span>
+아찔할 만큼
+달콤해, I like it
+
+내게도 온 걸까?
+이번엔 좀 달라
+반응해, my heartbeat
+두근거리잖아</div></section><section class="lyric-col"><h3>2</h3><div class="lyric-body">Ooh, I love it
+제멋대로 커져 버린
+Ooh, I love it
+짜릿한 이 느낌
+
+Yeah, we’re stupid, stupid
+Yeah, let’s do this, do this
+Cuz love’s so sweet
+And a little bit of sour
+
+Ooh, <span class="chant">I love it</span>
+자꾸 손이 가지, baby
+Ooh, <span class="chant">I love it</span>
+완벽해, so tasty
+
+Yeah, we’re <span class="chant">stupid, stupid</span>
+Yeah, let’s <span class="chant">do this, do this</span>
+Cuz love’s so sweet
+And a little bit of sour
+온통 내 머릿속
+하트가 떠다녀
+Heart with emotion
+
+Umm don’t know how to do this
+But I love it
+가만히만 있지 말고
+Bet you don&#x27;t wanna lose me, I know
+
+하루 종일 <span class="chant">말야</span>
+You make me <span class="chant">higher</span>
+레몬 라임보다
+상큼해, I like it
+
+내게도 온 걸까?
+이번엔 진짜야
+반응해, my heartbeat
+터질 것만 같아</div></section><section class="lyric-col"><h3>3</h3><div class="lyric-body">Ooh, <span class="chant">I love it</span>
+아무도 못 말려, baby
+Ooh, <span class="chant">I love it</span>
+짜릿한 이 느낌
+
+Yeah, we’re <span class="chant">stupid, stupid</span>
+Yeah, let’s <span class="chant">do this, do this</span>
+
+Cuz love’s so sweet
+And a little bit of sour
+
+Ooh, <span class="chant">I love it</span>
+제멋대로 커져 버린
+Ooh, <span class="chant">I love it</span>
+짜릿한 이 느낌
+
+Yeah, we’re <span class="chant">stupid, stupid</span>
+Yeah, let’s <span class="chant">do this, do this</span>
+Cuz love’s so sweet
+And a little bit of sour
+
+Ooh, I love it
+자꾸 손이 가지, baby
+Ooh, I love it
+완벽해, so tasty
+
+Yeah, we’re stupid, stupid
+Yeah, let’s do this, do this
+Cuz love’s so sweet
+And a little bit of sour
+
+Ooh, I love it<span class="chant">(비비 서진)</span>
+Ooh, I love it<span class="chant">(서희 혜린)</span>
+Ooh, I love it<span class="chant">(이유 힛지스)</span>
+
+Cuz love’s so sweet
+And a little bit of sour(함성)</div></section></div></div></article><article class="song-panel" id="song1" role="tabpanel" aria-labelledby="tab-1" hidden style="--theme:#fe4d2e;--accent:#fe4d2e;--accent-dark:#fe4d2e;">
+    <header class="song-header"><div><p class="eyebrow">HITGS / FAN CHANT</p><h2>GROSS</h2><p class="album">GROSS</p></div>
+    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br><span class="sublegend">MHTML内の色付き文字を反映</span></div></header>
+    <div class="scroll"><div class="cols"><section class="lyric-col"><h3>1</h3><div class="lyric-body"><span class="chant">(비비 서진 서희 혜린 이유)</span>
+<span class="chant">(힛지스 GROSS)</span>
+
+Get excited
+너만 보게 돼, <span class="chant">on my phone</span>
+I can’t hide it
+Look at my face, <span class="chant">내 표정</span>
+
+왜 저래? 왜 또 신이 났대?
+괜히 아닌 척해
+급 표정관리 <span class="chant">힛지스</span>
+
+하루 종일 붕 떠있어, <span class="chant">In my space</span>
+오해 하지 말아줘, 원래 나 <span class="chant">안 그래</span>
+
+과몰입하게 돼 자꾸 분위기에
+진짜 어떡해 대체 what is wrong with me?
+
+<span class="chant">(함성)</span>
+This mess is literally gonna make me throw up
+
+That lovey dovey mushy gooshey
+<span class="chant">That’s gross!</span>
+That lovesick puppy kissy touchy
+<span class="chant">That’s gross!</span>
+
+Get that feel away from me,
+Get that feel away from me,
+
+Get that feel get that feel,
+Get that feel away from me,
+That’s gross!</div></section><section class="lyric-col"><h3>2</h3><div class="lyric-body">너 때메 자꾸 아파, 머리
+<span class="chant">That’s gross!</span>
+한 숨도 못 자도 안 졸려, 뭐지?
+<span class="chant">That’s gross!</span>
+
+Get that feel away from me,
+Get that feel away from me,
+
+Get that feel get that feel,
+Get that feel away from me,
+That’s gross!
+
+널 마주칠 확률을 막 계산해
+오늘의 운세 같은 걸 확인해
+
+사진들 몰래 훔쳐보다가 <span class="chant">“Like”</span>
+밤새 이불 킥 해, 왜 이럴까 <span class="chant">나?</span>
+
+커피 같은 거 써서 안 먹는 <span class="chant">나인데</span>
+괜히 한 번 또 시켜봐, 너의 <span class="chant">favorite</span>
+
+Play again again, 네가 좋아하는 노래
+<span class="chant">That’s gross!</span>
+
+That lovey dovey mushy gooshey
+<span class="chant">That’s gross!</span>
+That lovesick puppy kissy touchy
+<span class="chant">That’s gross!</span></div></section><section class="lyric-col"><h3>3</h3><div class="lyric-body">Get that feel away from me,
+Get that feel away from me,
+
+Get that feel get that feel,
+Get that feel away from me,
+That’s gross!
+
+너 때메 자꾸 아파, 머리
+<span class="chant">That’s gross!</span>
+한 숨도 못 자도 안 졸려, 뭐지?
+<span class="chant">That’s gross!</span>
+
+Get that feel away from me,
+Get that feel away from me,
+
+Get that feel get that feel,
+Get that feel away from me,
+That’s gross!
+
+<span class="chant">(환호)</span>
+Disgusting 징그럽지
+<span class="chant">But I don’t wanna stop it</span>
+
+Get that feel away from me,
+Get that feel away from me,
+
+Get that feel get that feel,
+Get that feel away from me,
+<span class="chant">That’s gross!</span></div></section></div></div></article><article class="song-panel" id="song2" role="tabpanel" aria-labelledby="tab-2" hidden style="--theme:#b36cff;--accent:#b36cff;--accent-dark:#b36cff;">
+    <header class="song-header"><div><p class="eyebrow">HITGS / FAN CHANT</p><h2>CHARIZZMA</h2><p class="album">CHARIZZMA</p></div>
+    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br><span class="sublegend">MHTML内の色付き文字を反映</span></div></header>
+    <div class="scroll"><div class="cols"><section class="lyric-col"><h3>1</h3><div class="lyric-body"><span class="chant">(비비 서진 서희 혜린 이유 CHARIZZMA)</span>
+
+Rolling stone
+던져볼래 내 꿈 <span class="chant">속으로</span>
+
+낯선 길이라도 gotta go
+신경 안 써, like the way it goes
+<span class="chant">On the road gotta go</span>
+
+Ooh everything that glitters
+Isn’t gold
+상관없어
+<span class="chant">Yeah yeah</span>
+
+When we pull up, we gon’ make a scene <span class="chant">(힛지스)</span>
+HITGStory! it’s a quantum leap <span class="chant">(스토리)</span>
+
+뭐가 들어있게? in my big big bags
+And all that <span class="chant">CHARIZZMA</span>
+
+고민 따윈 하나도 없지 <span class="chant">(없지!)</span>
+We got chance &amp; pocketful of dreams<span class="chant">(후~위!)</span>
+
+뭐가 들어있게? in my big big bags
+And all that CHARIZZMA
+
+<span class="chant">워어어어어~(점점 커지게)</span>
+걸음걸이, 표정까지
+I know that I’m LIT <span class="chant">(LIT)</span>
+Not intimate, not into it
+I just wanna kick it <span class="chant">(아하!)</span>
+
+갖고 싶지, know you want it
+You tryna <span class="chant">steal it</span>
+난 언제나 keep it run it
+Can you <span class="chant">feel it</span></div></section><section class="lyric-col"><h3>2</h3><div class="lyric-body">Ooh everything that glitters
+Isn’t gold
+관심 없어
+<span class="chant">Yeah yeah</span>
+
+When we pull up, we gon’ make a scene <span class="chant">(힛지스)</span>
+HITGStory! it’s a quantum leap <span class="chant">(스토리)</span>
+
+자신감이 넘쳐, in my big big bags
+And all that <span class="chant">CHARIZZMA</span>
+
+고민 따윈 하나도 없지 <span class="chant">(없지!)</span>
+We got chance &amp; pocketful of dreams<span class="chant">(후~위!)</span>
+
+설렘이 가득해, in my big big bags
+And all that <span class="chant">CHARIZZMA</span>
+
+R I Z Z <span class="chant">(CHARIZZMA)</span>
+I&#x27;m the one and only <span class="chant">(CHARIZZMA)</span>
+
+Let me show you what’s in my big big bags
+And all that CHARIZZMA
+
+R I Z Z <span class="chant">(CHARIZZMA)</span>
+I&#x27;m the one and only <span class="chant">(CHARIZZMA)</span>
+
+Let me show you what’s in my big big bags
+And all that CHARIZZMA
+
+<span class="chant">(Let&#x27;s Go HITGS!)</span>
+Hey girl
+Ya what’s up
+I don’t even needa tell you
+I just gotta show you
+Show me what
+A little something like this</div></section><section class="lyric-col"><h3>3</h3><div class="lyric-body">I got the rizz
+말론 <span class="chant">설명 못 해</span>
+Out of your league so up
+
+너무 놀라진 마
+<span class="chant">(깜.짝.이.야!)</span>
+
+You just not like me
+Got the R I Z Z Z <span class="chant">baby</span>
+
+널 초대할게 나의 세계로
+Come into my own
+
+Leap In To it L I T 자! <span class="chant">하나, 둘, set</span>
+바래왔던 순간으로, <span class="chant">like that</span>
+
+When we pull up, we gon’ make a scene <span class="chant">(힛지스)</span>
+HITGStory! it’s a quantum leap <span class="chant">(스토리)</span>
+
+우리 얘길 가득 채워, big big bags
+And all that <span class="chant">CHARIZZMA</span>
+
+고민 따윈 하나도 없지 <span class="chant">(없지!)</span>
+We got chance &amp; pocketful of dreams<span class="chant">(후~위!)</span>
+
+우리 얘길 가득 채워, big big bags
+And all that <span class="chant">CHARIZZMA</span>
+
+R I Z Z <span class="chant">(CHARIZZMA)</span>
+I&#x27;m the one and only <span class="chant">(CHARIZZMA)</span>
+
+Let me show you what’s in my big big bags
+And all that <span class="chant">CHARIZZMA</span>
+<span class="chant">(함성!)</span></div></section></div></div></article><article class="song-panel" id="song3" role="tabpanel" aria-labelledby="tab-3" hidden style="--theme:#fd6baa;--accent:#fd6baa;--accent-dark:#fd6baa;">
+    <header class="song-header"><div><p class="eyebrow">HITGS / FAN CHANT</p><h2>HAPPY</h2><p class="album">Things we love : I</p></div>
+    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br><span class="sublegend">MHTML内の色付き文字を反映</span></div></header>
+    <div class="scroll"><div class="cols"><section class="lyric-col"><h3>1</h3><div class="lyric-body">HAPPY, HAPPY
+I’M SO HAPPY
+A-E-I-O <span class="chant">MINUS ‘U’</span>
+
+HAPPY, HAPPY
+I’M SO HAPPY
+다들 알아, <span class="chant">너 빼구</span>
+
+Stop it,<span class="chant">(Stop it!)</span> 다정해지지 마
+그렇게 웃어줄 때
+녹아내리니까
+
+Not in the mood to have fun
+모르지 내 기분<span class="chant">(음~?</span>
+또 이렇게 바보가 돼
+머리가 고장이 난 듯
+
+Sometimes it hurts
+아무렇지도 않은 너를 볼 때면
+
+<span class="chant">And I know And I know And I know</span>
+그냥 친구 보다
+가까워지고 싶어 난 <span class="chant">(나도!)</span>
+좋아한다고 말할까
+UNHAPPY해
+
+입술만 깨물어 Goin’ <span class="chant">crazy</span>
+너 땜에, <span class="chant">Baby</span>
+매일 매일이
+넌 <span class="chant">모르겠지만</span>
+
+넌 진짜 Stupid<span class="chant">(Stupid)</span>
+I wanna say it now
+All day 너 몰래 혼잣말</div></section><section class="lyric-col"><h3>2</h3><div class="lyric-body">HAPPY, HAPPY
+I’M SO HAPPY
+A-E-I-O <span class="chant">MINUS ‘U’</span>
+
+HAPPY, HAPPY
+I’M SO HAPPY
+다들 알아, <span class="chant">너 빼구</span>
+
+No way, 솔직히 말할게
+아무렇지 않긴
+너무 피곤해<span class="chant">(피곤해)</span>
+
+두근두근 거리는 맘 들키지 않기
+눈치도 없는 너에게
+서운해도 절대 티 내지 않기
+
+Sometimes it hurts
+자꾸만 커져 가는 맘을 볼 때면
+
+<span class="chant">And I know And I know And I know</span>
+그냥 친구 보다
+가까워지고 싶어 난<span class="chant">(나도)</span>
+좋아한다고 말할까
+UNHAPPY해
+
+발끝만 바라봐 Goin’ <span class="chant">crazy</span>
+너 땜에, <span class="chant">Baby</span>
+매일 매일이
+넌 <span class="chant">모르겠지만</span>
+
+넌 진짜 Stupid<span class="chant">(Stupid)</span>
+I wanna say it now
+All day 너 몰래 혼잣말</div></section><section class="lyric-col"><h3>3</h3><div class="lyric-body">HAPPY, HAPPY
+I’M SO HAPPY
+A-E-I-O <span class="chant">MINUS ‘U’</span>
+HAPPY, HAPPY
+I’M SO HAPPY
+다들 알아, <span class="chant">너 빼구</span>
+
+HAPPY, HAPPY
+I’M SO HAPPY
+A-E-I-O MINUS ‘U’
+HAPPY, HAPPY
+I’M SO HAPPY
+
+이제는 말할래, Goin’ crazy<span class="chant">(와~~~)</span>
+너 땜에, Baby<span class="chant">(Let&#x27;s go HITGS!)</span>
+매일 매일이
+넌 모르겠지만
+
+넌 진짜 Stupid<span class="chant">(Stupid)</span>
+I wanna say it now
+All day 너 몰래 혼잣말
+
+HAPPY, HAPPY
+I’M SO HAPPY
+<span class="chant">A-E-I-O MINUS ‘U’</span>
+
+HAPPY, HAPPY
+I’M SO HAPPY
+<span class="chant">다들 알아, 너 빼구</span>
+
+HAPPY, HAPPY
+I’M SO HAPPY
+<span class="chant">A-E-I-O MINUS ‘U’</span>
+
+HAPPY, HAPPY<span class="chant">(비비 서진)</span>
+I’M SO HAPPY<span class="chant">(서희 혜린 이유 HAPPY)</span>
+다들 알아, 너 빼구<span class="chant">(HITGS!)</span></div></section></div></div></article><article class="song-panel" id="song4" role="tabpanel" aria-labelledby="tab-4" hidden style="--theme:#f875ae;--accent:#f875ae;--accent-dark:#f875ae;">
+    <header class="song-header"><div><p class="eyebrow">HITGS / FAN CHANT</p><h2>A-HA!</h2><p class="album">Things we love : I</p></div>
+    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br><span class="sublegend">MHTML内の色付き文字を反映</span></div></header>
+    <div class="scroll"><div class="cols"><section class="lyric-col"><h3>1</h3><div class="lyric-body">When i dance, everytime
+I can feel, in your eyes
+Skip the talk, <span class="chant">(말해봐)</span>
+Don’t be stupid, stupid
+Say it, ‘A-HA’
+<span class="chant">(A-HA, A-HA)</span>
+솔직하게 Say it, ‘A-HA’
+<span class="chant">(A-HA, A-HA, A-HA, A-HA)</span>
+
+“I like this”, &quot;It’s my style”
+Yeah, that’s right <span class="chant">(너도야)</span>
+어때 넌, Don’t be shy
+Don’t be stupid, stupid
+Say it, ‘A-HA’
+<span class="chant">(A-HA, A-HA)</span>
+솔직하게 Say it, ‘A-HA’
+<span class="chant">(A-HA, A-HA, A-HA, A-HA)</span>
+
+맞아, 눈을 뗄 수 없어
+어떤 <span class="chant">(Crush는 말야)</span>
+놀란 듯 제멋대로 뛰는 맘
+With <span class="chant">(colorful hearts)</span>
+
+I put a little bit of magic, 너는
+<span class="chant">(몰랐겠지)</span>
+막 시도때도 없이 생각나서
+<span class="chant">(미치겠지?)</span></div></section><section class="lyric-col"><h3>2</h3><div class="lyric-body">너를 볼 때, LOVE
+그 말을 믿어
+Got me stumblin’, bubblin’
+맙소사, OH MY GOD
+<span class="chant">(OH MY GOD, OH MY GOD)</span>
+I’m like OH MY GOD
+
+When i dance, everytime
+I can feel, in your eyes
+Skip the talk, <span class="chant">(말해봐)</span>
+Don’t be stupid, stupid
+Say it, ‘A-HA’
+<span class="chant">(A-HA, A-HA)</span>
+솔직하게 Say it, ‘A-HA’
+<span class="chant">(A-HA, A-HA, A-HA, A-HA)</span>
+
+“I like this”, &quot;It’s my style”
+Yeah, that’s right <span class="chant">(너도야)</span>
+어때 넌, Don’t be shy
+Don’t be stupid, stupid
+Say it, ‘A-HA’
+<span class="chant">(A-HA, A-HA)</span>
+솔직하게 Say it, ‘A-HA&#x27;
+<span class="chant">(A-HA, A-HA, A-HA, A-HA)</span>
+
+기분이 쫌 그래도 울지 않는 Type
+준비해 놔 초콜릿, 마치 <span class="chant">(Valentine)</span>
+들어봐 하나씩, 알려줄게 날
+그냥 외워둬, 이해 마, 이게 나니까</div></section><section class="lyric-col"><h3>3</h3><div class="lyric-body">Oh never let me go
+난 쫌 Hot &amp; cold
+Baby don’t you know
+
+너를 볼 때, LOVE
+그 말을 믿어
+Got me stumblin’, bubblin’
+맙소사, OH MY GOD
+<span class="chant">(OH MY GOD, OH MY GOD)</span>
+I’m like OH MY GOD
+<span class="chant">(Let&#x27;s go HITGS)</span>
+
+When i dance, everytime
+I can feel, in your eyes
+Skip the talk, 말해봐
+Don’t be stupid, stupid
+Say it, ‘A-HA’
+<span class="chant">(A-HA, A-HA)</span>
+솔직하게 Say it, ‘A-HA’
+<span class="chant">(A-HA, A-HA, A-HA, A-HA)</span>
+
+“I like this”, &quot;It’s my style”
+Yeah, that’s right <span class="chant">(너도야)</span>
+어때 넌, Don’t be shy
+Don’t be stupid, stupid
+Say it, ‘A-HA’
+<span class="chant">(A-HA, A-HA)</span>
+솔직하게 Say it, ‘A-HA’
+(A-HA, A-HA, A-HA, A-HA)
+<span class="chant">(비비, 서진, 서희, 혜린, 이유 HITGS)</span></div></section></div></div></article><article class="song-panel" id="song5" role="tabpanel" aria-labelledby="tab-5" hidden style="--theme:#f577ae;--accent:#f577ae;--accent-dark:#f577ae;--audience:#f577ae;--audience-dark:#f577ae;">
+    <header class="song-header"><div><p class="eyebrow">HITGS / FAN CHANT</p><h2>Cherry Blossom</h2><p class="album">Things We Dream : Vol.1</p></div>
+    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br><span class="sublegend">画像から文字起こし（要照合）</span></div></header>
+    <div class="scroll"><div class="cols"><section class="lyric-col"><h3>1</h3><div class="lyric-body">Dancing in cherry blossom
+영원한 사랑
+너에게 줄거야
+I’ll remember how you loved me
+
+<span class="chant audience">누! 가! 꽃! 이! 야!</span>
+
+로즈 핑크빛의 하늘위로
+설탕 같은 구름과
+
+달콤한 바람에 <span class="chant echo">스친</span>
+너의 그 향기는 <span class="chant echo">sweet</span>
+기분이 자꾸 들떠와
+
+<span class="chant audience">(함성)</span>
+아른거려와 너의 모든 표정이
+네가 하는 모든 표현이
+나의 손을 <span class="chant echo">잡아줘</span>
+발걸음을 <span class="chant echo">맞춰줘</span>
+날 바라봐줘
+I wanna tell you<span class="chant audience">(힛! 지! 스!)</span>
+
+Dancing in cherry blossom
+햇살에 맞춰
+나란히 <span class="chant echo">걸었어</span>
+Like a cherry blossom
+음악에 맞춰
+너와 둘이 춤을 춰 <span class="chant echo">right?</span></div></section><section class="lyric-col"><h3>2</h3><div class="lyric-body">Cherry blossom
+나에게 와서
+봄을 속삭여줘
+나의 손끝에 너 <span class="chant echo">닿았을 때</span>
+들떠 있는 아이가 돼
+
+꿈을 꾼 것 같아
+나란히 걷는 꿈
+푸른 바다 속에
+너와 헤엄치는 꿈
+
+나의 바다와 <span class="chant echo">hey!</span>
+너의 파도와 <span class="chant echo">ho!</span>
+호흡처럼 하나같아 run to find
+봄을 타고 와 네가 내게 <span class="chant echo">다가와</span>
+Even if the season goes
+My heart knows, my heart
+
+<span class="chant audience">(함성)</span>
+아른거려와 너의 모든 표정이
+네가 하는 모든 표현이
+나의 손을 <span class="chant echo">잡아줘</span>
+발걸음을 <span class="chant echo">맞춰줘</span>
+날 바라봐줘
+I wanna tell you<span class="chant audience">(힛! 지! 스!)</span>
+
+Dancing in cherry blossom
+햇살에 맞춰
+나란히 <span class="chant echo">걸었어</span>
+Like a cherry blossom
+음악에 맞춰
+너와 둘이 춤을 춰 <span class="chant echo">right?</span></div></section><section class="lyric-col"><h3>3</h3><div class="lyric-body">Cherry blossom
+나에게 와서
+봄을 속삭여줘
+나의 손끝에 너 <span class="chant echo">닿았을 때</span>
+들떠 있는 아이가 돼
+
+Ohohohohoh<span class="chant echo">(체리블라썸 x 3)</span>
+Loving you feels like coming home
+Ohohohohoh<span class="chant echo">(체리블라썸 x 3)</span>
+
+<span class="chant audience">(함성)</span>
+Dancing in cherry blossom
+햇살에 맞춰
+나란히 걸었어
+Like a cherry blossom
+음악에 맞춰
+너와 둘이 춤을 춰 right?
+
+Cherry blossom
+나에게 와서
+봄을 속삭여줘
+나의 손끝에 너 닿았을 때
+들떠 있는 아이가 돼
+
+<span class="chant audience">(비비! 서진! 서희! 혜린! 이유!)
+(힛지스! 체리블라썸!)</span>
+Dancing in cherry blossom
+영원한 사랑
+너에게 줄거야
+I’ll remember how you loved me
+
+<span class="chant audience">영원히! 사랑해!</span></div></section></div></div></article><article class="song-panel" id="song6" role="tabpanel" aria-labelledby="tab-6" hidden style="--theme:#ff00f2;--accent:#ff00f2;--accent-dark:#ff00f2;">
+    <header class="song-header"><div><p class="eyebrow">HITGS / FAN CHANT</p><h2>Little by Little</h2><p class="album">Things We Dream : Vol.2</p></div>
+    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br><span class="sublegend">画像から文字起こし（要照合）</span></div></header>
+    <div class="scroll"><div class="cols"><section class="lyric-col"><h3>1</h3><div class="lyric-body"><span class="chant echo">Little by Little</span>
+말로만 듣던 사랑
+<span class="chant echo">Little by Little</span>
+설마 내게도 온 걸까?
+
+네가 옆에 있을 때
+신기한 일이 펼쳐져
+I know I know I know
+
+평온했던 하루가 이상해짐
+네 생각에
+가만히 못 있지
+
+심장은 또 <span class="chant echo">두근대</span>
+그냥 막 <span class="chant echo">웃게 돼</span>
+이런 적 없는데 나 Oh
+
+대충 걸친 <span class="chant echo">Look</span>
+자유로운 <span class="chant echo">Mood</span>
+눈을 뗄 수 없어 난
+
+다정한 말투
+너의 그 웃음
+비상이야 <span class="chant echo">Heart attack</span>
+
+나의 하루에
+네가 온 뒤에
+세상은 <span class="chant echo">Upside down</span>
+맘은 부풀다 못해 Flying</div></section><section class="lyric-col"><h3>2</h3><div class="lyric-body">조금씩
+<span class="chant echo">Little by Little</span>
+말로만 듣던 사랑
+<span class="chant echo">Little by Little</span>
+이젠 나도 알 것 같아
+
+네가 옆에 있을 때
+신기한 일이 펼쳐져
+I know I know I know
+
+온 세상이 다 핑크빛
+Filter <span class="chant echo">Little by Little</span>
+꽃잎이 막 흩날려 대
+여기 <span class="chant echo">Little by Little</span>
+
+영화 속의
+주인공이 된 것만 같아
+Think I’m in love
+널 더 알고 싶어
+<span class="chant echo">Little by Little</span>
+
+아직은 Fifty Fifty
+이 장르는 Romance 일까?
+헷갈려
+
+머릿속은 계속 Loading
+<span class="chant echo">Me &amp; You</span>
+답이 없는 이 Story
+What’s next?
+더 궁금해져
+
+대충 걸친 <span class="chant echo">Look</span>
+자유로운 <span class="chant echo">Mood</span>
+눈을 뗄 수 없어 난
+
+다정한 말투
+너의 그 웃음
+내 상황은 <span class="chant echo">Heart attack</span>
+
+봐도 봐도 왜
+보고 싶은데
+하루를 <span class="chant echo">못 참아</span>
+종이비행기를 난 Flying</div></section><section class="lyric-col"><h3>3</h3><div class="lyric-body">조금씩
+<span class="chant echo">Little by Little</span>
+말로만 듣던 사랑
+<span class="chant echo">Little by Little</span>
+이젠 나도 알 것 같아
+
+네가 옆에 있을 때
+신기한 일이 펼쳐져
+I know I know I know
+
+온 세상이 다 핑크빛
+Filter <span class="chant echo">Little by Little</span>
+꽃잎이 막 흩날려 대
+여기 <span class="chant echo">Little by Little</span>
+
+영화 속의
+주인공이 된 것만 같아
+Think I’m in love
+널 더 알고 싶어
+<span class="chant echo">Little by Little</span>
+
+<span class="chant echo">함성</span>
+
+Little by Little by Little
+Little by Little by Little <span class="chant echo">(Whoa)</span>
+Little by Little by Little
+Little by Little by Little <span class="chant echo">(Whoa)</span>
+Little by Little by Little <span class="chant echo">(비비! 서진! 서희! 혜린! 이유! 힛지스! 리틀바이리틀!)</span>
+
+Little by Little by Little (Whoa oh)
+다 알고 싶어
+Little by Little</div></section></div></div>
+</article>
+<article class="song-panel" id="song7" role="tabpanel" aria-labelledby="tab-7" hidden style="--theme:#e49ecb;--accent:#e49ecb;--accent-dark:#e49ecb;">
+    <header class="song-header"><div><p class="eyebrow">HITGS / FAN CHANT</p><h2>Gulliver!</h2><p class="album">Things We Dream : Vol.3</p></div>
+    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br><span class="sublegend">提供された歌詞と字幕を反映／ピンク系</span></div></header>
+    <div class="scroll"><div class="cols"><section class="lyric-col"><h3>1</h3><div class="lyric-body"><span class="chant">뤼커웨이 양서진 최서희 조혜린 이안 힛지스! Gulliver! Yeah!</span>
+어디서 왔니
+Different <span class="chant">그림체</span>
+너만 보여 Here
+현실감 없지
+
+So tall 우뚝 솟아
+Like a <span class="chant">giant</span>
+네 앞에 서면
+자꾸 <span class="chant">작아져</span>
+
+When you walk back in
+You make me guess
+네 <span class="chant">A to Z</span>, 다 궁금해
+<span class="chant">(나도)</span>Somehow you twist my plot to fantasy
+설렘이 그리는 여행기
+
+<span class="chant">Gulliver!</span>
+내 세상이 너 땜에 뒤흔들려
+어지러워
+시선만 닿아도 쿵쿵대
+
+<span class="chant">Gulliver!</span>
+나는 나밖에 몰랐는데
+어느 순간부터
+너밖에 몰라 Boy</div></section><section class="lyric-col"><h3>2</h3><div class="lyric-body">I try to chillax
+못 본 척을 해
+<span class="chant">But I can’t help it</span>
+발걸음 널 향해
+
+When you’re not around here
+동서남북 Alll day
+<span class="chant">머릿속
+두둥</span> 등장해
+
+When you walk back in
+Don’t make me guess
+네 <span class="chant">A to Z</span>, 다 궁금해
+<span class="chant">(나도)</span>Somehow you twist my plot to fantasy
+설렘이 그리는 여행기
+
+<span class="chant">Gulliver!</span>
+내 세상이 너 땜에 뒤흔들려
+어지러워
+시선만 닿아도 쿵쿵대
+
+<span class="chant">Gulliver!</span>
+나는 나밖에 몰랐는데
+어느 순간부터
+너밖에 몰라 Boy</div></section><section class="lyric-col"><h3>3</h3><div class="lyric-body">Is it <span class="chant">yet?</span> Is it <span class="chant">time?</span>
+아직 이를까?
+Don’t you hear my heart
+even through the crowd
+널 따라 커져버린 Heart
+Say my name and
+Bring me in
+
+<span class="chant">Gulliver!</span>
+내 세상이 너 땜에 뒤흔들려
+어지러워
+시선만 닿아도 쿵쿵대
+
+<span class="chant">Gulliver!</span>
+나는 나밖에 몰랐는데
+어느 순간부터
+<span class="chant">(Let&#x27;s go HITGS)</span>너밖에 몰라 Boy
+
+Gulliver!
+Gulliver!
+Don’t hold back I need you in
+<span class="chant">뤼커웨이 양서진 최서희 조혜린 이안 힛지스! Gulliver! Yeah!</span>
+
+<span class="chant">(함성)</span></div></section></div></div></article>
+  <p class="foot">元資料：添付されたnamu.wiki保存ページ（MHTML）、SOURPATCHの3列HTML。<br>「Cherry Blossom」「Little by Little」は添付画像から文字起こししました。Gulliver! は提供された歌詞の色指定とメンバー本名字幕を反映しました。画像掲載曲の掛け声は色付き箇所を強調し、原画像と照合できるようにしています。保存したHTMLだけでオフライン閲覧できます。</p>
+</main>
+<script>
+(()=>{
+  const tabs=[...document.querySelectorAll('.tab')],panels=[...document.querySelectorAll('.song-panel')];
+  function select(i, updateHash=true){
+    i=Math.max(0,Math.min(tabs.length-1,i));
+    tabs.forEach((b,n)=>{let on=n===i;b.classList.toggle('active',on);b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;});
+    panels.forEach((p,n)=>p.hidden=n!==i);
+    if(updateHash)history.replaceState(null,'','#'+encodeURIComponent(panels[i].querySelector('h2').textContent));
+  }
+  tabs.forEach((b,i)=>{
+    b.addEventListener('click',()=>select(i));
+    b.addEventListener('keydown',e=>{
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+        e.preventDefault();const next=(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length; select(next);tabs[next].focus();
+      }
+    });
+  });
+  const hash=decodeURIComponent(location.hash.slice(1)).toLowerCase();
+  let index=panels.findIndex(p=>p.querySelector('h2').textContent.toLowerCase()===hash);
+  if(index>=0)select(index,false);
+  document.getElementById('fontSize').addEventListener('input',e=>{
+    const size=e.target.value+'px'; document.documentElement.style.setProperty('--size',size);document.getElementById('sizeLabel').textContent=size;
+  });
+  document.getElementById('printBtn').addEventListener('click',()=>window.print());
+})();
+</script></body></html>
