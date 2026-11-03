@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>HITGS 応援法 - 全8曲 / 3列表示</title>
+<title>HITGS 応援法</title>
 <style>
   :root { color-scheme:light dark; --bg:#f3f6f9; --panel:#fff;--text:#202733;--muted:#647181;--line:#d9e1ea; --size:15px; }
   @media (prefers-color-scheme:dark) { :root{ --bg:#111823;--panel:#1b2634;--text:#f3f6fa;--muted:#aab7c7;--line:#3d4b5c; } }
@@ -59,12 +59,12 @@
 </style>
 </head>
 <body><main class="outer">
-  <header class="app-head"><div><h1>HITGS 応援法 / 3列表示</h1><p class="intro">全8曲・掛け声を曲別カラーで強調。画像掲載の2曲もテキスト化しています。</p></div>
+  <header class="app-head"><div><h1>HITGS 応援法</h1></div>
   <div class="controls"><label for="fontSize">文字サイズ <output id="sizeLabel">15px</output></label><input type="range" min="12" max="21" value="15" id="fontSize"><button type="button" class="btn" id="printBtn">印刷 / PDF</button></div></header>
-  <nav id="tabs" role="tablist" aria-label="応援法を表示する曲"><button class="tab active" id="tab-0" data-key="0" role="tab" aria-controls="song0" aria-selected="true" style="--chip:#e2bd00"><span class="dot"></span>SOURPATCH<span class="img-tag">元HTML</span></button><button class="tab" id="tab-1" data-key="1" role="tab" aria-controls="song1" aria-selected="false" style="--chip:#cf3944"><span class="dot"></span>GROSS<span class="img-tag">元HTML</span></button><button class="tab" id="tab-2" data-key="2" role="tab" aria-controls="song2" aria-selected="false" style="--chip:#b78ce6"><span class="dot"></span>CHARIZZMA<span class="img-tag">元HTML</span></button><button class="tab" id="tab-3" data-key="3" role="tab" aria-controls="song3" aria-selected="false" style="--chip:#dc81a0"><span class="dot"></span>HAPPY<span class="img-tag">元HTML</span></button><button class="tab" id="tab-4" data-key="4" role="tab" aria-controls="song4" aria-selected="false" style="--chip:#dc81a0"><span class="dot"></span>A-HA!<span class="img-tag">元HTML</span></button><button class="tab" id="tab-5" data-key="5" role="tab" aria-controls="song5" aria-selected="false" style="--chip:#2594a0"><span class="dot"></span>Cherry Blossom<span class="img-tag">画像文字起こし</span></button><button class="tab" id="tab-6" data-key="6" role="tab" aria-controls="song6" aria-selected="false" style="--chip:#8e4d9d"><span class="dot"></span>Little by Little<span class="img-tag">画像文字起こし</span></button><button class="tab" id="tab-7" data-key="7" role="tab" aria-controls="song7" aria-selected="false" style="--chip:#e49ecb"><span class="dot"></span>Gulliver!<span class="img-tag">字幕・提供テキスト</span></button></nav>
+  <nav id="tabs" role="tablist" aria-label="応援法を表示する曲"><button class="tab active" id="tab-0" data-key="0" role="tab" aria-controls="song0" aria-selected="true" style="--chip:#ffd61d"><span class="dot"></span>SOURPATCH</button><button class="tab" id="tab-1" data-key="1" role="tab" aria-controls="song1" aria-selected="false" style="--chip:#fe4d2e"><span class="dot"></span>GROSS</button><button class="tab" id="tab-2" data-key="2" role="tab" aria-controls="song2" aria-selected="false" style="--chip:#b36cff"><span class="dot"></span>CHARIZZMA</button><button class="tab" id="tab-3" data-key="3" role="tab" aria-controls="song3" aria-selected="false" style="--chip:#fd6baa"><span class="dot"></span>HAPPY</button><button class="tab" id="tab-4" data-key="4" role="tab" aria-controls="song4" aria-selected="false" style="--chip:#fd6baa"><span class="dot"></span>A-HA!</button><button class="tab" id="tab-5" data-key="5" role="tab" aria-controls="song5" aria-selected="false" style="--chip:#f577ae"><span class="dot"></span>Cherry Blossom</button><button class="tab" id="tab-6" data-key="6" role="tab" aria-controls="song6" aria-selected="false" style="--chip:#ff00f2"><span class="dot"></span>Little by Little</button><button class="tab" id="tab-7" data-key="7" role="tab" aria-controls="song7" aria-selected="false" style="--chip:#e49ecb"><span class="dot"></span>Gulliver!</button><button class="tab" id="tab-8" data-key="8" role="tab" aria-controls="song8" aria-selected="false" style="--chip:#ff9be4"><span class="dot"></span>Ctrl C</button></nav>
   <article class="song-panel" id="song0" role="tabpanel" aria-labelledby="tab-0"  style="--theme:#ffd61d;--accent:#ffd61d;--accent-dark:#ffd61d;">
     <header class="song-header"><div><p class="eyebrow">HITGS / FAN CHANT</p><h2>SOURPATCH</h2><p class="album">Things we love : H</p></div>
-    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br><span class="sublegend">MHTML内の色付き文字を反映</span></div></header>
+    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所</div></header>
     <div class="scroll"><div class="cols"><section class="lyric-col"><h3>1</h3><div class="lyric-body"><span class="chant">(비비 서진 서희 혜린 이유)
 (힛지스 사워패치)
 </span>
@@ -168,7 +168,7 @@ Ooh, I love it<span class="chant">(이유 힛지스)</span>
 Cuz love’s so sweet
 And a little bit of sour(함성)</div></section></div></div></article><article class="song-panel" id="song1" role="tabpanel" aria-labelledby="tab-1" hidden style="--theme:#fe4d2e;--accent:#fe4d2e;--accent-dark:#fe4d2e;">
     <header class="song-header"><div><p class="eyebrow">HITGS / FAN CHANT</p><h2>GROSS</h2><p class="album">GROSS</p></div>
-    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br><span class="sublegend">MHTML内の色付き文字を反映</span></div></header>
+    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br></div></header>
     <div class="scroll"><div class="cols"><section class="lyric-col"><h3>1</h3><div class="lyric-body"><span class="chant">(비비 서진 서희 혜린 이유)</span>
 <span class="chant">(힛지스 GROSS)</span>
 
@@ -257,7 +257,7 @@ Get that feel get that feel,
 Get that feel away from me,
 <span class="chant">That’s gross!</span></div></section></div></div></article><article class="song-panel" id="song2" role="tabpanel" aria-labelledby="tab-2" hidden style="--theme:#b36cff;--accent:#b36cff;--accent-dark:#b36cff;">
     <header class="song-header"><div><p class="eyebrow">HITGS / FAN CHANT</p><h2>CHARIZZMA</h2><p class="album">CHARIZZMA</p></div>
-    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br><span class="sublegend">MHTML内の色付き文字を反映</span></div></header>
+    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br></div></header>
     <div class="scroll"><div class="cols"><section class="lyric-col"><h3>1</h3><div class="lyric-body"><span class="chant">(비비 서진 서희 혜린 이유 CHARIZZMA)</span>
 
 Rolling stone
@@ -363,7 +363,7 @@ Let me show you what’s in my big big bags
 And all that <span class="chant">CHARIZZMA</span>
 <span class="chant">(함성!)</span></div></section></div></div></article><article class="song-panel" id="song3" role="tabpanel" aria-labelledby="tab-3" hidden style="--theme:#fd6baa;--accent:#fd6baa;--accent-dark:#fd6baa;">
     <header class="song-header"><div><p class="eyebrow">HITGS / FAN CHANT</p><h2>HAPPY</h2><p class="album">Things we love : I</p></div>
-    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br><span class="sublegend">MHTML内の色付き文字を反映</span></div></header>
+    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br></div></header>
     <div class="scroll"><div class="cols"><section class="lyric-col"><h3>1</h3><div class="lyric-body">HAPPY, HAPPY
 I’M SO HAPPY
 A-E-I-O <span class="chant">MINUS ‘U’</span>
@@ -467,7 +467,7 @@ HAPPY, HAPPY<span class="chant">(비비 서진)</span>
 I’M SO HAPPY<span class="chant">(서희 혜린 이유 HAPPY)</span>
 다들 알아, 너 빼구<span class="chant">(HITGS!)</span></div></section></div></div></article><article class="song-panel" id="song4" role="tabpanel" aria-labelledby="tab-4" hidden style="--theme:#f875ae;--accent:#f875ae;--accent-dark:#f875ae;">
     <header class="song-header"><div><p class="eyebrow">HITGS / FAN CHANT</p><h2>A-HA!</h2><p class="album">Things we love : I</p></div>
-    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br><span class="sublegend">MHTML内の色付き文字を反映</span></div></header>
+    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br></div></header>
     <div class="scroll"><div class="cols"><section class="lyric-col"><h3>1</h3><div class="lyric-body">When i dance, everytime
 I can feel, in your eyes
 Skip the talk, <span class="chant">말해봐</span>
@@ -553,7 +553,7 @@ Say it, ‘A-HA’
 (A-HA, A-HA, A-HA, A-HA)
 <span class="chant">(비비, 서진, 서희, 혜린, 이유 HITGS)</span></div></section></div></div></article><article class="song-panel" id="song5" role="tabpanel" aria-labelledby="tab-5" hidden style="--theme:#f577ae;--accent:#f577ae;--accent-dark:#f577ae;--audience:#f577ae;--audience-dark:#f577ae;">
     <header class="song-header"><div><p class="eyebrow">HITGS / FAN CHANT</p><h2>Cherry Blossom</h2><p class="album">Things We Dream : Vol.1</p></div>
-    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br><span class="sublegend">画像から文字起こし（要照合）</span></div></header>
+    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br></div></header>
     <div class="scroll"><div class="cols"><section class="lyric-col"><h3>1</h3><div class="lyric-body">Dancing in cherry blossom
 영원한 사랑
 너에게 줄거야
@@ -645,7 +645,7 @@ I’ll remember how you loved me
 
 <span class="chant audience">영원히! 사랑해!</span></div></section></div></div></article><article class="song-panel" id="song6" role="tabpanel" aria-labelledby="tab-6" hidden style="--theme:#ff00f2;--accent:#ff00f2;--accent-dark:#ff00f2;">
     <header class="song-header"><div><p class="eyebrow">HITGS / FAN CHANT</p><h2>Little by Little</h2><p class="album">Things We Dream : Vol.2</p></div>
-    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br><span class="sublegend">画像から文字起こし（要照合）</span></div></header>
+    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br></div></header>
     <div class="scroll"><div class="cols"><section class="lyric-col"><h3>1</h3><div class="lyric-body"><span class="chant echo">Little by Little</span>
 말로만 듣던 사랑
 <span class="chant echo">Little by Little</span>
@@ -751,7 +751,7 @@ Little by Little</div></section></div></div>
 </article>
 <article class="song-panel" id="song7" role="tabpanel" aria-labelledby="tab-7" hidden style="--theme:#e49ecb;--accent:#e49ecb;--accent-dark:#e49ecb;">
     <header class="song-header"><div><p class="eyebrow">HITGS / FAN CHANT</p><h2>Gulliver!</h2><p class="album">Things We Dream : Vol.3</p></div>
-    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br><span class="sublegend">提供された歌詞と字幕を反映／ピンク系</span></div></header>
+    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br></div></header>
     <div class="scroll"><div class="cols"><section class="lyric-col"><h3>1</h3><div class="lyric-body"><span class="chant">뤼커웨이 양서진 최서희 조혜린 이안 힛지스! Gulliver! Yeah!</span>
 어디서 왔니
 Different <span class="chant">그림체</span>
@@ -825,7 +825,60 @@ Don’t hold back I need you in
 <span class="chant">뤼커웨이 양서진 최서희 조혜린 이안 힛지스! Gulliver! Yeah!</span>
 
 <span class="chant">(함성)</span></div></section></div></div></article>
-  <p class="foot">元資料：添付されたnamu.wiki保存ページ（MHTML）、SOURPATCHの3列HTML。<br>「Cherry Blossom」「Little by Little」は添付画像から文字起こししました。Gulliver! は提供された歌詞の色指定とメンバー本名字幕を反映しました。画像掲載曲の掛け声は色付き箇所を強調し、原画像と照合できるようにしています。保存したHTMLだけでオフライン閲覧できます。</p>
+  <article class="song-panel" id="song8" role="tabpanel" aria-labelledby="tab-8" hidden style="--theme:#ff9be4;--accent:#ff9be4;--accent-dark:#ff9be4;">
+    <header class="song-header"><div><p class="eyebrow">HITGS / FAN CHANT</p><h2>Ctrl C</h2></div>
+    <div class="legend"><span class="swatch"></span>色付き文字＝掛け声・強調箇所<br></div></header>
+    <div class="scroll"><div class="cols"><section class="lyric-col"><h3>1</h3><div class="lyric-body"><span class="chant">(힛찌들 사랑을 붙 여 넣 기)</span>
+대기해 놓음 My phone
+항상 풀 충전해
+혹시 또 몰라서
+화면과 눈싸움 Play
+
+지금쯤 뭐 할까?
+너도 내 생각 함?
+Screen time은 너로 가득
+그때 온 너의 DM
+
+&quot;너 주말에 뭐 해?&quot;
+너무한 거 아니야 (p)
+Every little thing you do
+고백은 양보할게<span class="chant">👏👏</span>
+
+<span class="chant">Copy Copy</span> 네 맘을 Copy
+붙여넣기 I&#x27;m so ready
+<span class="chant">Copy Copy</span> 너의 순서 뒤
+Paste 할게 baby Heart 이모지
+</div></section>
+<section class="lyric-col"><h3>2</h3><div class="lyric-body">Weekend You Me
+우리가 만난 곳
+Not my favorite
+오늘만큼은 Hot spot
+
+Today <span class="chant">(Today)</span> no plan <span class="chant">(No plan)</span>
+딱히 뭘 안 해도 peak
+어색해도 Feels good
+Just like a movie scene
+
+새로고침 해
+느좋 예감만 Edit
+Every little thing you do
+고백은 양보할게<span class="chant">👏👏</span>
+
+<span class="chant">Copy Copy</span> 네 맘을 Copy
+붙여넣기 I&#x27;m so ready
+<span class="chant">Copy Copy</span> 너의 순서 뒤
+Paste 할게 baby Heart 이모지
+
+썼다가 지웠다
+In your hands In your hands
+고민 말고 Enter
+인내심 부족해
+
+<span class="chant">Copy Copy</span> 네 맘을 Copy
+붙여넣기 I&#x27;m so ready
+<span class="chant">Copy Copy</span> 너의 순서 뒤
+Paste 할게 baby Heart 이모지
+<span class="chant">(컨 트 롤 씨)</span></div></section></div></div></article>
 </main>
 <script>
 (()=>{
